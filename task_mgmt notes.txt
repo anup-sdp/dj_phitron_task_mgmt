@@ -158,11 +158,25 @@ git status
 git branch -M main
 git remote add origin https://github.com/anup-sdp/dj_phitron_task_mgmt.git
 git push -u origin main
+------------
 git add .
-git commit -m "final"
+git commit -m "before moving to class based view"
 git push -u origin main
 ====================================
 
+
+
+
+
+
+
+at 15.1
+
+
+
+
+
+n
 
 
 
