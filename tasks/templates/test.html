@@ -1,0 +1,44 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test template</title>
+	<link rel="stylesheet" href="{% static 'css/output.css' %}"> 
+	<!-- for cache: in production serve filenames with hashes (e.g. output.abc123.css) so when you rebuild, the URL changes and browsers fetch the new file. -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+	<h3 class="bg-green-400">testing tailwind in django</h3> 
+    {% for name in names %}
+		<!-- pipe symbol -->
+        {% if name|is_capitalized %}
+            <p>{{ name }}</p>
+		{% else %}
+			<p>{{ name|to_title }}</p>	
+        {% endif %}
+    {% endfor %}        
+    
+	<p class="amar-style">total names in orginal list : {{count}} </p>	
+	<div class="flex m-5 gap-3">
+		<!-- using template with -->
+		{% with img_url='images/image-1.jpeg' %}
+			<img src="{% static img_url %}" alt="image 1">
+		{% endwith %}	
+
+		<!-- using template as -->
+		{% static 'images/image-2.jpeg' as img_src %}
+		<img src="{{ img_src }}" alt="image 2">
+		
+		<!-- <img src="{% static 'images/image-2.jpeg' %}" alt="image 2"> -->
+	</div>
+
+	
+
+</body>
+</html>
+
+
+<!-- Built-in template tags and filters: https://docs.djangoproject.com/en/5.2/ref/templates/builtins/ -->

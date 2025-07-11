@@ -1,0 +1,11 @@
+asgiref==3.8.1
+certifi==2025.6.15
+Django==5.2.2
+django-debug-toolbar==5.2.0
+Faker==37.4.0
+pillow==11.2.1
+psycopg==3.2.9
+psycopg-binary==3.2.9
+python-decouple==3.8
+sqlparse==0.5.3
+tzdata==2025.2

@@ -1,0 +1,1 @@
+# default_app_config = 'tasks.apps.TasksConfig' # used in pre django 3.2
