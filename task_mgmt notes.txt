@@ -121,8 +121,8 @@ pip install Pillow
 python manage.py startapp core --(video 10.6)
 
 
-user: anup(manager),user2(Employee),user3, pw:aB@12345
-users: admin(Admin),teaton, linda49, jamesruiz(Employee), pw: 1234
+user: anup(Manager),user2(Employee),user3, pw:aB@12345
+users: admin(Admin), teaton(User), linda49(Employee), jamesruiz(Employee), pw: 1234 -------------------------
 
 ----
 for email,
@@ -162,16 +162,25 @@ git push -u origin main
 git add .
 git commit -m "before moving to class based view"
 git push -u origin main
+------------
+git add .
+git commit -m "bug fix"
+git push -u origin main
 ====================================
 
+module 5: cbv
+Classy Class-Based Views: https://ccbv.co.uk/
+http://docs.djangoproject.com/en/5.2/topics/class-based-views/
+@method_decorator,
+auth mixins: LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+context mixin,
+
+15.5 Generic display views: ListView, DetailView
 
 
 
 
-
-
-at 15.1
-
+at 15.6, 0:00
 
 
 

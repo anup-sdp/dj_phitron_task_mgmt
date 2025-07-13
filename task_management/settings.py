@@ -1,6 +1,6 @@
 # phitron sdp django task_management project
 # before postgresql part: https://github.com/phitronio/SDT-Django/tree/module-4
-# after postgresql part: https://github.com/phitronio/SDT-Django/tree/main/task-management
+# after postgresql part: https://github.com/phitronio/SDT-Django/tree/main/task-management (cbv at module 15)
 
 
 """

@@ -1,12 +1,7 @@
 <!-- http://127.0.0.1:8000/tasks/view-tasks/ -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tasks & projects</title>
-</head>
-<body>
+{% extends "base-core.html" %}
+{% block content %}
+<section class="p-9">
 	<div>
 		{% if tasks %}
 			<p>all tasks:</p>
@@ -46,6 +41,6 @@
 			<p>no projects found.</p>
 		{% endif %}
 	</div>
-</body>
-</html>
+</section>
+{% endblock content %}
 <!--  -->

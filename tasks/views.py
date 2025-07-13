@@ -142,15 +142,85 @@ def create_task(request):
 create_decorators = [login_required, permission_required(
     "tasks.add_task", login_url='no-permission')]
 
+
+
+
+# video 15.3: code at https://github.com/phitronio/SDT-Django/blob/module-15/task-management/tasks/views.py
+# https://docs.djangoproject.com/en/5.2/topics/class-based-views/
+# https://docs.djangoproject.com/en/5.2/topics/auth/default/
+# use @method_decorator or auth mixins: LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.views.generic.base import ContextMixin
+from django.views import View
+
+# cbv
+class CreateTask(ContextMixin, LoginRequiredMixin, PermissionRequiredMixin, View):
+	# MRO: Method Resolution Order: the order in which Python walks through the base classes to find the method/attribute you asked for.
+    # For creating task
+    permission_required = 'tasks.add_task'
+    login_url = 'sign-in'
+    template_name = 'task_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['task_form'] = kwargs.get('task_form', TaskModelForm())
+        context['task_detail_form'] = kwargs.get(
+            'task_detail_form', TaskDetailModelForm())
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        task_form = TaskModelForm(request.POST)
+        task_detail_form = TaskDetailModelForm(request.POST, request.FILES)
+
+        if task_form.is_valid() and task_detail_form.is_valid():
+            task = task_form.save()
+            task_detail = task_detail_form.save(commit=False)
+            task_detail.task = task
+            task_detail.save()
+            messages.success(request, "Task Created Successfully")
+            return redirect('task-detail', pk=task.pk)   # or wherever you want
+        else:
+            # Only here you need the context to redisplay the form with errors
+            messages.error(request, "form is invalid")
+            context = self.get_context_data(
+                task_form=task_form,
+                task_detail_form=task_detail_form
+            )
+            return render(request, self.template_name, context)
+
+
+
 @login_required
 @permission_required("tasks.view_task", login_url='no-permission')
-def view_tasks(request):
+def view_tasks(request):  # should be view_projects ?
     # tasks = Task.objects.all()
     tasks = Task.objects.prefetch_related('assigned_to').all()
     task_count = Task.objects.aggregate(total=Count('id')) # get by task_count.total  # aggregate functions
     projects = Project.objects.annotate(num_tasks= Count('task')).order_by('name').prefetch_related('task').all() # annotate: create new field, prefetch_related: avoids 1+n query    
     
     return render(request, "show_task.html", {"tasks": tasks, "projects": projects})
+
+from django.utils.decorators import method_decorator
+from django.views.generic import ListView, DetailView, UpdateView
+
+view_project_decorators = [login_required, permission_required("projects.view_project", login_url='no-permission')]
+
+# cbv
+@method_decorator(view_project_decorators, name='dispatch')
+class ViewProject(ListView):
+    model = Project
+    context_object_name = 'projects'
+    template_name = 'show_task.html'
+
+    def get_queryset(self):
+        queryset = Project.objects.annotate(num_task=Count('task')).order_by('num_task')
+        return queryset
+    
 
 from django.shortcuts import get_object_or_404
 

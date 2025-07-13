@@ -1,46 +1,15 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>form</title>
-	<link rel="stylesheet" href="{% static 'css/output.css' %}">
+{% extends "base-core.html" %}
+{% block content %}
+<section class="p-9">
 	<style>
 		.fade-out {
 			transition: opacity 0.3s ease-out;
 			opacity: 0;
 		}
 	</style>
-</head>
-<body>
 	<!-- <h3 class="bg-green-100">this is from task_form.html file (ok)</h3> -->
 	<br>
-	<div class="w-1/2 mx-auto mt-8">
-		<!-- messages -->
-		<div class="w-1/2 mx-auto mt-8">
-			{% if messages %}
-				{% for message in messages %}
-					<div class="message relative px-4 py-2 mb-1 rounded-md
-						{% if 'success' in message.tags %}bg-green-400
-						{% elif 'info' in message.tags %}bg-blue-400
-						{% elif 'warning' in message.tags %}bg-amber-400
-						{% elif 'error' in message.tags or 'danger' in message.tags %}bg-red-400
-						{% else %}bg-gray-200
-						{% endif %}">
-						<button type="button"
-							class="absolute top-1 right-1 text-xl leading-none focus:outline-none"
-							aria-label="Dismiss"
-							onclick="dismissMessage(this)">
-								&times;
-						</button> <!-- x button -->
-						<div class="text-center">{{ message }}</div>
-					</div>			
-				{% endfor %}
-			{% endif %}
-		</div>
-
-		
+	<div class="w-1/2 mx-auto mt-8">		
 		<!-- form -->
 		<form method="POST" enctype='multipart/form-data'>
 			{% csrf_token %}
@@ -61,7 +30,6 @@
 			}, { once: true });
 		}
 	</script>
-</body>
-</html>
-
+</section>
+{% endblock content %}
 <!-- for edit task status implementation in form ? -->

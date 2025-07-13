@@ -1,6 +1,6 @@
 # tasks, urls.py:
 from django.urls import path
-from tasks.views import manager_dashboard, employee_dashboard, test, create_task, task_home, view_tasks, update_task, delete_task, task_details, dashboard
+from tasks.views import manager_dashboard, employee_dashboard, test, create_task, task_home, view_tasks, update_task, delete_task, task_details, dashboard, ViewProject
 
 urlpatterns = [
     path('manager-dashboard/', manager_dashboard, name="manager-dashboard"),  # http://127.0.0.1:8000/tasks/manager-dashboard/   (ok- add margin)
@@ -8,6 +8,7 @@ urlpatterns = [
     path('test/', test),
 	path('task-home/', task_home, name='task-home'),
 	path('view-tasks/', view_tasks, name='view-tasks'),  # http://127.0.0.1:8000/tasks/view-tasks/
+	# path('view_task/', ViewProject.as_view(), name='view-task'),
 	path('create-task/', create_task, name='create-task'), # fbv # http://127.0.0.1:8000/tasks/create-task/
 	path('update-task/<int:id>/', update_task, name='update-task'),
 	path('delete-task/<int:id>/', delete_task, name='delete-task'),
