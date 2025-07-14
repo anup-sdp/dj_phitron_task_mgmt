@@ -159,7 +159,7 @@ def admin_dashboard(request):  # admin dashboard vs task dashboard ?
             user.group_name = user.all_groups[0].name
         else:
             user.group_name = 'No Group Assigned'
-    return render(request, 'admin/dashboard.html', {"users": users}) # optimized db query
+    return render(request, 'admin/admin_dashboard.html', {"users": users}) # optimized db query
 
 
 #@user_passes_test(is_admin, login_url='sign-in')
