@@ -22,6 +22,7 @@
             <a href="{% url 'create-group' %}"  class="text-gray-600 hover:text-gray-800">Create Group</a>
           </div>
           <div class="flex items-center">
+			<div>user-name: {{user.username}}</div>
             <div class="relative">
               <button id="user-menu-button" class="flex items-center focus:outline-none"> 
                 <img class="h-8 w-8 rounded-full object-cover" src="https://randomuser.me/api/portraits/lego/3.jpg " alt="User avatar"/> <!-- https://placekitten.com/100/100 image offline -->
@@ -50,7 +51,7 @@
           <a href="{% url 'view-tasks' %}" class="block py-2 text-gray-600 hover:text-gray-800">Tasks</a>          
           <a href="{% url 'group-list' %}" class="block py-2 text-gray-600 hover:text-gray-800">Groups</a>          
           <a href="{% url 'create-group' %}" class="block py-2 text-gray-600 hover:text-gray-800">Create Group</a>          
-        </div>
+        </div>		
       </nav>
     </header>
 	<!-- messages -->

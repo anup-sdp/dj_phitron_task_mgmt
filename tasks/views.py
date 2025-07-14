@@ -197,7 +197,7 @@ class CreateTask(ContextMixin, LoginRequiredMixin, PermissionRequiredMixin, View
 
 @login_required
 @permission_required("tasks.view_task", login_url='no-permission')
-def view_tasks(request):  # should be view_projects ?
+def view_tasks(request):  # task list, should be view_projects ?
     # tasks = Task.objects.all()
     tasks = Task.objects.prefetch_related('assigned_to').all()
     task_count = Task.objects.aggregate(total=Count('id')) # get by task_count.total  # aggregate functions
@@ -221,6 +221,43 @@ class ViewProject(ListView):
         queryset = Project.objects.annotate(num_task=Count('task')).order_by('num_task')
         return queryset
     
+
+
+@login_required
+@permission_required("tasks.view_task", login_url='no-permission')
+def task_details(request, task_id):  # details of one task
+    task = Task.objects.get(id=task_id)
+    status_choices = Task.STATUS_CHOICES
+
+    if request.method == 'POST':
+        selected_status = request.POST.get('task_status')
+        print(selected_status)
+        task.status = selected_status
+        task.save()
+        return redirect('task-details', task.id)
+
+    return render(request, 'task_details.html', {"task": task, 'status_choices': status_choices})
+
+
+class TaskDetail(DetailView):
+    model = Task
+    template_name = 'task_details.html'
+    context_object_name = 'task'
+    pk_url_kwarg = 'task_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)  # {"task": task}
+        # {"task": task, 'status_choices': status_choices}
+        context['status_choices'] = Task.STATUS_CHOICES
+        return context
+
+    def post(self, request, *args, **kwargs):
+        task = self.get_object()
+        selected_status = request.POST.get('task_status')
+        task.status = selected_status
+        task.save()
+        return redirect('task-details', task.id)
+
 
 from django.shortcuts import get_object_or_404
 
@@ -247,10 +284,49 @@ def update_task(request, id):
             # return redirect('update-task', id=task.id)
             return redirect('manager-dashboard')
 
-    task_form = TaskModelForm(instance=task)  # For GET
-    task_detail_form = TaskDetailModelForm(instance=detail)    
+    task_form = TaskModelForm(instance=task)  # For GET, status update ? ------------ separate update form ?
+    task_detail_form = TaskDetailModelForm(instance=detail)
     context = {"task_form": task_form, "task_detail_form": task_detail_form}
     return render(request, "task_form.html", context)
+
+
+class UpdateTask(UpdateView):
+    model = Task
+    form_class = TaskModelForm
+    template_name = 'task_form.html'
+    context_object_name = 'task'
+    pk_url_kwarg = 'id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['task_form'] = self.get_form()
+        print(context)
+        if hasattr(self.object, 'details') and self.object.details:
+            context['task_detail_form'] = TaskDetailModelForm(
+                instance=self.object.details)
+        else:
+            context['task_detail_form'] = TaskDetailModelForm()
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        task_form = TaskModelForm(request.POST, instance=self.object)
+
+        task_detail_form = TaskDetailModelForm(
+            request.POST, request.FILES, instance=getattr(self.object, 'details', None))
+
+        if task_form.is_valid() and task_detail_form.is_valid():
+
+            """ For Model Form Data """
+            task = task_form.save()
+            task_detail = task_detail_form.save(commit=False)
+            task_detail.task = task
+            task_detail.save()
+
+            messages.success(request, "Task Updated Successfully")
+            return redirect('update-task', self.object.id)
+        return redirect('update-task', self.object.id)
 
 @login_required
 @permission_required("tasks.delete_task", login_url='no-permission')
@@ -265,20 +341,25 @@ def delete_task(request, id):
         return redirect('manager-dashboard')
 
 
-@login_required
-@permission_required("tasks.view_task", login_url='no-permission')
-def task_details(request, task_id):
-    task = Task.objects.get(id=task_id)
-    status_choices = Task.STATUS_CHOICES
 
-    if request.method == 'POST':
+class TaskDetail(DetailView):
+    model = Task
+    template_name = 'task_details.html'
+    context_object_name = 'task'
+    pk_url_kwarg = 'task_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)  # {"task": task}
+        # {"task": task, 'status_choices': status_choices}
+        context['status_choices'] = Task.STATUS_CHOICES
+        return context
+
+    def post(self, request, *args, **kwargs):
+        task = self.get_object()
         selected_status = request.POST.get('task_status')
-        print(selected_status)
         task.status = selected_status
         task.save()
         return redirect('task-details', task.id)
-
-    return render(request, 'task_details.html', {"task": task, 'status_choices': status_choices})
 
 from users.views import is_admin
 

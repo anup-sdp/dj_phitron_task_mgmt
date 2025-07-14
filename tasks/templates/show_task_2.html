@@ -1,0 +1,47 @@
+<!-- task list and project list -->
+<!-- http://127.0.0.1:8000/tasks/view-tasks/ -->
+{% extends "base-core.html" %}
+{% block content %}
+<section class="p-9">
+	<div>
+		{% if tasks %}
+			<p>all tasks:</p>
+		{% endif %}
+		<ol>			
+			{% for task in tasks %}
+				<li>
+					<p>{{task.title}} - employees:</p>
+						{% for emp in task.assigned_to.all %}
+							<span>{{emp.username}}, </span>
+						{% endfor %}
+				</li>
+			{% endfor %}
+		</ol>
+	</div>
+	<hr>	
+	<div>
+		{% if projects %}
+			<p>all projects:</p>
+			{% for project in projects %}
+				<div class="project">
+					<h2>{{project.name}}</h2>
+					<p>tasks in this project: {{project.num_tasks}}</p>					
+					<h3>tasks:</h3>
+					{% if project.task.all %}  {# check if there are any task in this project #}
+						<ul class="task-list">
+							{% for task in project.task.all %}
+								<li>{{task.title}} - {{task.description}}</li>
+							{% endfor %}
+						</ul>
+					{% else %}
+						<p>no task in this project</p>
+					{% endif %}
+				</div>
+			{% endfor %}			
+		{% else %}
+			<p>no projects found.</p>
+		{% endif %}
+	</div>
+</section>
+{% endblock content %}
+<!--  -->
