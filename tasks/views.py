@@ -238,25 +238,6 @@ class DeleteTaskView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
 
 
-class TaskDetail(DetailView):
-    model = Task
-    template_name = 'task_details.html'
-    context_object_name = 'task'
-    pk_url_kwarg = 'task_id'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)  # {"task": task}
-        # {"task": task, 'status_choices': status_choices}
-        context['status_choices'] = Task.STATUS_CHOICES
-        return context
-
-    def post(self, request, *args, **kwargs):
-        task = self.get_object()
-        selected_status = request.POST.get('task_status')
-        task.status = selected_status
-        task.save()
-        return redirect('task-details', task.id)
-
 from users.views import is_admin
 # cbv not needed for dashboard
 @login_required

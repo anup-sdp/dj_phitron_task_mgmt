@@ -12,6 +12,6 @@ urlpatterns = [
 	path('create-task/', views.CreateTask.as_view(), name='create-task'), # cbv
     path('update-task/<int:id>/', views.UpdateTaskView.as_view(), name='update-task'),
     path('delete-task/<int:id>/', views.DeleteTaskView.as_view(), name='delete-task'),
-    path('task/<int:task_id>/details/', views.TaskDetail.as_view(), name='task-details'),    
+    path('task/<int:task_id>/details/', views.TaskDetailView.as_view(), name='task-details'),    
 	path('dashboard/', views.dashboard, name='dashboard')  # fbv
 ]
