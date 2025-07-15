@@ -19,36 +19,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 User = get_user_model()
 
-# Test for users
-"""
-class EditProfileView(UpdateView):
-    model = User
-    form_class = EditProfileForm
-    template_name = 'accounts/update_profile.html'
-    context_object_name = 'form'
-
-    def get_object(self):
-        return self.request.user
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['userprofile'] = UserProfile.objects.get(user=self.request.user)
-        return kwargs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user_profile = UserProfile.objects.get(user=self.request.user)
-        print("views", user_profile)
-        context['form'] = self.form_class(
-            instance=self.object, userprofile=user_profile)
-        return context
-
-    def form_valid(self, form):
-        form.save(commit=True)
-        return redirect('profile')
-"""
-
-
 class EditProfileView(UpdateView):
     model = User
     form_class = EditProfileForm
@@ -62,23 +32,6 @@ class EditProfileView(UpdateView):
         form.save()
         return redirect('profile')
 
-
-"""
-def sign_up(request):    
-    if request.method == 'POST':
-        form = CustomRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data.get('password1'))
-            user.is_active = False # ----- was False, to activate using email.
-            user.save()
-            messages.success(request, 'A Confirmation mail sent. Please check your email')  # -----         
-            return redirect('sign-in')
-        else:
-            print("Form is not valid:", form.errors)
-    form = CustomRegistrationForm()        
-    return render(request, 'registration/register.html', {"form": form})
-"""
 
 class SignUpView(FormView):
     form_class = CustomRegistrationForm
@@ -96,38 +49,6 @@ class SignUpView(FormView):
     def form_invalid(self, form):
         print("Form is not valid:", form.errors)
         return super().form_invalid(form)
-
-"""
-def sign_in(request):  # alternate cbv LoginView    
-    # using form
-    # form = LoginForm()
-    # if request.method == 'POST':
-    #     form = LoginForm(data=request.POST)
-    #     if form.is_valid():
-    #         user = form.get_user()
-    #         login(request, user)
-    #         return redirect('home')
-    # return render(request, 'registration/login.html', {'form': form})
-    
-    # without using form
-    if request.method == 'POST':
-        #print("sign_in called in POST method")
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        # print("Doc", username, password)
-        user = authenticate(request, username=username, password=password)  # None if is_active == False, or wrong username/password
-        print(user) 
-        if user is not None:
-            login(request, user)
-            return redirect('home')
-        else:
-            messages.error(request, 'No activated user found with these credentials.') 
-            return redirect('sign-in')
-    #print("sign_in called in GET method") 
-    # return HttpResponse("<h1>test HttpResponse for login</h1>")    
-    return render(request, 'registration/login-1.html')
-"""
-
 
     
 class CustomLoginView(LoginView):
@@ -175,18 +96,6 @@ def is_admin(user):
     # add if superuser ?
     return user.groups.filter(name='Admin').exists()
 
-"""
-@user_passes_test(is_admin, login_url='no-permission')
-def admin_dashboard(request):  # admin dashboard vs task dashboard ?
-    users = User.objects.prefetch_related(Prefetch('groups', queryset=Group.objects.all(), to_attr='all_groups')).all()  # learn Prefetch
-    # print(users)
-    for user in users:
-        if user.all_groups:
-            user.group_name = user.all_groups[0].name
-        else:
-            user.group_name = 'No Group Assigned'
-    return render(request, 'admin/admin_dashboard.html', {"users": users}) # optimized db query
-"""
 
 class AdminDashboardView(UserPassesTestMixin, TemplateView):
     template_name = 'admin/admin_dashboard.html'
@@ -210,24 +119,6 @@ class AdminDashboardView(UserPassesTestMixin, TemplateView):
         context['users'] = users
         return context
 
-"""
-@user_passes_test(is_admin, login_url='sign-in')
-def assign_role(request, user_id):  # assign to a group
-    user = User.objects.get(id=user_id)
-    form = AssignRoleForm()
-    name = user.username
-
-    if request.method == 'POST':
-        form = AssignRoleForm(request.POST)
-        if form.is_valid():
-            role = form.cleaned_data.get('role')
-            user.groups.clear()  # Remove old roles
-            user.groups.add(role)
-            messages.success(request, f"User \"{user.username}\" has been assigned to the \"{role.name}\" role")                            
-            return redirect('admin-dashboard')
-
-    return render(request, 'admin/assign_role.html', {"form": form, "username":name})
-"""
 
 class AssignRoleView(UserPassesTestMixin, FormView):
     form_class = AssignRoleForm
@@ -253,20 +144,6 @@ class AssignRoleView(UserPassesTestMixin, FormView):
         return super().form_valid(form)
     
 
-"""
-@user_passes_test(is_admin, login_url='no-permission')
-def create_group(request):
-    form = CreateGroupForm()
-    if request.method == 'POST':
-        form = CreateGroupForm(request.POST)
-
-        if form.is_valid():
-            group = form.save()
-            messages.success(request, f"Group { group.name} has been created successfully")                            
-            return redirect('create-group')
-
-    return render(request, 'admin/create_group.html', {'form': form})
-"""
 
 class CreateGroupView(UserPassesTestMixin, FormView):
     form_class = CreateGroupForm
@@ -282,13 +159,6 @@ class CreateGroupView(UserPassesTestMixin, FormView):
         messages.success(self.request, f'Group {group.name} has been created successfully')
         return super().form_valid(form)
 
-
-"""
-@user_passes_test(is_admin, login_url='no-permission')
-def group_list(request):
-    groups = Group.objects.prefetch_related('permissions').all()  # resolve 1+n problem
-    return render(request, 'admin/group_list.html', {'groups': groups})
-"""
 
 
 class GroupListView(UserPassesTestMixin, TemplateView):
