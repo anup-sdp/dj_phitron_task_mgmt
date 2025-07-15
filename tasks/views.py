@@ -14,13 +14,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView, TemplateView
 from django.utils.decorators import method_decorator
 
-def is_employee(user):
-    # add if superuser/admin ?
+def is_employee(user):   
     return user.groups.filter(name='Employee').exists()
 
 
-def is_manager(user):
-    # add if superuser ?
+def is_manager(user):    
     return user.groups.filter(name='Admin').exists() or user.groups.filter(name='Manager').exists()
 
 
@@ -159,31 +157,16 @@ class ViewProject(ListView):
    
 
 
-@login_required
-@permission_required("tasks.view_task", login_url='no-permission')
-def task_details(request, task_id):  # details of one task
-    task = Task.objects.get(id=task_id)
-    status_choices = Task.STATUS_CHOICES
-
-    if request.method == 'POST':
-        selected_status = request.POST.get('task_status')
-        print(selected_status)
-        task.status = selected_status
-        task.save()
-        return redirect('task-details', task.id)
-
-    return render(request, 'task_details.html', {"task": task, 'status_choices': status_choices})
-
-
-class TaskDetail(DetailView):
+class TaskDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Task
     template_name = 'task_details.html'
     context_object_name = 'task'
     pk_url_kwarg = 'task_id'
+    permission_required = "tasks.view_task"
+    login_url = 'no-permission'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)  # {"task": task}
-        # {"task": task, 'status_choices': status_choices}
+        context = super().get_context_data(**kwargs)
         context['status_choices'] = Task.STATUS_CHOICES
         return context
 
@@ -193,7 +176,6 @@ class TaskDetail(DetailView):
         task.status = selected_status
         task.save()
         return redirect('task-details', task.id)
-
 
 
 class UpdateTaskView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):

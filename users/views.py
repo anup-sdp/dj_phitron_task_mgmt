@@ -19,6 +19,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 User = get_user_model()
 
+
+def is_admin(user):
+    # add if superuser ?
+    return user.groups.filter(name='Admin').exists()
+
+
 class EditProfileView(UpdateView):
     model = User
     form_class = EditProfileForm
@@ -62,14 +68,7 @@ class CustomLoginView(LoginView):
     def form_invalid(self, form):
         messages.error(self.request, 'No activated user found with these credentials.')
         return super().form_invalid(form)	
-
-"""
-@login_required
-def sign_out(request):
-    if request.method == 'POST':
-        logout(request)
-        return redirect('sign-in')
-"""    
+  
 
 class SignOutView(LoginRequiredMixin, View):
     def post(self, request):
@@ -77,7 +76,8 @@ class SignOutView(LoginRequiredMixin, View):
         return redirect('sign-in')	
 
 
-def activate_user(request, user_id, token):  # cbv not needed
+ # cbv not needed for this
+def activate_user(request, user_id, token): 
     try:
         user = User.objects.get(id=user_id)
         if default_token_generator.check_token(user, token):
@@ -91,10 +91,6 @@ def activate_user(request, user_id, token):  # cbv not needed
     except User.DoesNotExist:
         return HttpResponse('User not found')
 
-
-def is_admin(user):
-    # add if superuser ?
-    return user.groups.filter(name='Admin').exists()
 
 
 class AdminDashboardView(UserPassesTestMixin, TemplateView):
