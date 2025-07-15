@@ -3,7 +3,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
-# Create your views here.
+# note: cbvs are in app tasks and users
 def home(request):
     return render(request, 'home.html')  # redirect ?
     # return HttpResponse("<h1>This is core Home</h1>")
