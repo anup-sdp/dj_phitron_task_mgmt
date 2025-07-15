@@ -21,25 +21,26 @@
 <body>
 	<h1>Welcome to Authentication System (login)</h1>	
 	<div class="login-container">
-	<h2>Sign In</h2>
-	<form method='POST'>
-		{% csrf_token %}
-		<label for="username">Username:</label><br>
-		<input type="text" id="username" name="username" required><br><br>
-		<label for="password">Password:</label><br>
-		<input type="password" id="password" name="password" required><br><br>
-		<input type="submit" value="Sign In">
-		{% if messages %}
-			<hr style="border-color: blue;">
-			<ul>
-				{% for message in messages %}
-					<li style="color: red;">
-						{{ message }}
-					</li>
-				{% endfor %}
-			</ul>
-		{% endif %}
-	</form>
+		<h2>Sign In</h2>
+		<form method='POST'>
+			{% csrf_token %}
+			<label for="username">Username:</label><br>
+			<input type="text" id="username" name="username" required><br><br>
+			<label for="password">Password:</label><br>
+			<input type="password" id="password" name="password" required><br><br>
+			<input type="submit" value="Sign In">
+			{% if messages %}
+				<hr style="border-color: blue;">
+				<ul>
+					{% for message in messages %}
+						<li style="color: red;">
+							{{ message }}
+						</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+		</form>
+		<p><a href="{% url 'password_reset' %}">Forgot Password?</a></p>
 	</div>
 </body>
 </html>

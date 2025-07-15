@@ -302,8 +302,8 @@ class UpdateTask(UpdateView):
         context['task_form'] = self.get_form()
         print(context)
         if hasattr(self.object, 'details') and self.object.details:
-            context['task_detail_form'] = TaskDetailModelForm(
-                instance=self.object.details)
+            context['task_detail_form'] = TaskDetailModelForm(instance=self.object.details)
+                
         else:
             context['task_detail_form'] = TaskDetailModelForm()
 
@@ -318,7 +318,7 @@ class UpdateTask(UpdateView):
 
         if task_form.is_valid() and task_detail_form.is_valid():
 
-            """ For Model Form Data """
+            # For Model Form Data
             task = task_form.save()
             task_detail = task_detail_form.save(commit=False)
             task_detail.task = task

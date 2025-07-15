@@ -130,12 +130,12 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Dhaka'
 
 USE_I18N = True
 
 USE_TZ = True
-
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -179,8 +179,10 @@ FRONTEND_URL = config('FRONTEND_URL', default='http://127.0.0.1:8000')  # develo
 # FRONTEND_URL = "https://yourapp.com"  # production
 # FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')
 
-LOGIN_URL = 'sign-in'
+LOGIN_URL = '/users/sign-in/'
 
+LOGIN_REDIRECT_URL = '/tasks/dashboard/'
+LOGOUT_REDIRECT_URL = '/'
 
 """
 to use image,

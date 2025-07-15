@@ -99,17 +99,6 @@ class CreateGroupForm(StyledFormMixin, forms.ModelForm):
         fields = ['name', 'permissions']
 
 
-class CustomPasswordChangeForm(StyledFormMixin, PasswordChangeForm):
-    pass
-
-
-class CustomPasswordResetForm(StyledFormMixin, PasswordResetForm):
-    pass
-
-
-class CustomPasswordResetConfirmForm(StyledFormMixin, SetPasswordForm):
-    pass
-
 
 """
 class EditProfileForm(StyledFormMixin, forms.ModelForm):
@@ -176,3 +165,14 @@ class CreateGroupForm(StyledFormMixin, forms.ModelForm):
         fields = ['name', 'permissions']
 
 # ----------	    
+
+class CustomPasswordChangeForm(StyledFormMixin, PasswordChangeForm):
+    pass
+
+
+class CustomPasswordResetForm(StyledFormMixin, PasswordResetForm):
+    pass
+
+
+class CustomPasswordResetConfirmForm(StyledFormMixin, SetPasswordForm):
+    pass

@@ -15,7 +15,7 @@ class UserProfile(models.Model):
 
 
 class CustomUser(AbstractUser):
-    profile_image = models.ImageField(upload_to='profile_images', blank=True, default='profile_images/default.png')        
+    profile_image = models.ImageField(upload_to='profile_images',null=True, blank=True, default='profile_images/profile_default.png')        
     bio = models.TextField(blank=True)
     
     def save(self, *args, **kwargs):

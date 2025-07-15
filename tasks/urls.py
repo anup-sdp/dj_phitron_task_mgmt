@@ -13,6 +13,6 @@ urlpatterns = [
 	path('update-task/<int:id>/', update_task, name='update-task'),
 	path('delete-task/<int:id>/', delete_task, name='delete-task'),
 	path('task/<int:task_id>/details/', task_details, name='task-details'), # ok
-	path('dashboard', dashboard, name='dashboard')
+	path('dashboard/', dashboard, name='dashboard')
     #path('create-task/', CreateTask.as_view(), name='create-task'), # cbv
 ]

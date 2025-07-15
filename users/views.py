@@ -79,7 +79,7 @@ def sign_up(request):
     return render(request, 'registration/register.html', {"form": form})
 
 
-def sign_in(request):
+def sign_in(request):  # alternate cbv LoginView
     """
     # using form
     form = LoginForm()
@@ -114,13 +114,8 @@ class CustomLoginView(LoginView):
     form_class = LoginForm
 
     def get_success_url(self):
-        next_url = self.request.GET.get('next')
+        next_url = self.request.GET.get('next')  # eg. non logged in http://127.0.0.1:8000/tasks/create-task/ to http://127.0.0.1:8000/users/sign-in/?next=/tasks/create-task/
         return next_url if next_url else super().get_success_url()
-
-
-class ChangePassword(PasswordChangeView):
-    template_name = 'accounts/password_change.html'
-    form_class = CustomPasswordChangeForm
 
 
 @login_required
@@ -194,13 +189,13 @@ def create_group(request):
     return render(request, 'admin/create_group.html', {'form': form})
 
 
-#@user_passes_test(is_admin, login_url='no-permission')
+@user_passes_test(is_admin, login_url='no-permission')
 def group_list(request):
     groups = Group.objects.prefetch_related('permissions').all()  # resolve 1+n problem
     return render(request, 'admin/group_list.html', {'groups': groups})
 
 
-class ProfileView(TemplateView):
+class ProfileView(TemplateView):  # https://docs.djangoproject.com/en/5.2/ref/class-based-views/base/
     template_name = 'accounts/profile.html'
 
     def get_context_data(self, **kwargs):
@@ -209,7 +204,7 @@ class ProfileView(TemplateView):
 
         context['username'] = user.username
         context['email'] = user.email
-        context['name'] = user.get_full_name()
+        context['name'] = user.get_full_name()  # builtin
         context['bio'] = user.bio
         context['profile_image'] = user.profile_image
 
@@ -218,6 +213,12 @@ class ProfileView(TemplateView):
         return context
 
 
+class ChangePassword(PasswordChangeView):
+    template_name = 'accounts/password_change.html'
+    form_class = CustomPasswordChangeForm
+    
+
+# password reset tested, ok.
 class CustomPasswordResetView(PasswordResetView):
     form_class = CustomPasswordResetForm
     template_name = 'registration/reset_password.html'
@@ -232,8 +233,7 @@ class CustomPasswordResetView(PasswordResetView):
         return context
 
     def form_valid(self, form):
-        messages.success(
-            self.request, 'A Reset email sent. Please check your email')
+        messages.success(self.request, 'A Reset email sent. Please check your email')            
         return super().form_valid(form)
 
 
@@ -244,7 +244,7 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
     def form_valid(self, form):
         messages.success(
-            self.request, 'Password reset successfully')
+            self.request, 'Password reset success!')
         return super().form_valid(form)
 
     

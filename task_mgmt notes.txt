@@ -166,6 +166,10 @@ git push -u origin main
 git add .
 git commit -m "bug fix"
 git push -u origin main
+------------
+git add .
+git commit -m "after module 17"
+git push -u origin main
 ====================================
 
 module 5: cbv
@@ -176,11 +180,13 @@ auth mixins: LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 context mixin,
 
 15.5 Generic display views: ListView, DetailView
+16.1 auth views: LoginView,
+16.3 Base views: TemplateView, https://docs.djangoproject.com/en/5.2/ref/class-based-views/base/
+16.4 custom filters
+password change and reset views
 
 
-
-
-at 16.1, 1:30
+at 17.4, 0:30
 
 
 
